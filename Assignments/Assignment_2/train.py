@@ -27,12 +27,13 @@ xtest[config.NUMERICAL_TO_IMPUTE]=pf.impute_na(xtest[config.NUMERICAL_TO_IMPUTE]
 
 
 # Group rare labels
-
+xtrain[config.CATEGORICAL_VARS]=pf.remove_rare_labels(xtrain,config.CATEGORICAL_VARS,0.05)
+xtest[config.CATEGORICAL_VARS]=pf.remove_rare_labels(xtest,config.CATEGORICAL_VARS,0.05)
 
 
 # encode categorical variables
-
-
+xtrain[config.CATEGORICAL_VARS] = pf.encode_categorical(xtrain,config.CATEGORICAL_VARS)
+xtest[config.CATEGORICAL_VARS] = pf.encode_categorical(xtest,config.CATEGORICAL_VARS)
 
 # check all dummies were added
 
