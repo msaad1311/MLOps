@@ -13,40 +13,48 @@ import joblib
 
 def load_data(df_path):
     # Function loads data for training
-    pass
+    df = pd.read_csv(df_path)
+    return df
 
 
 
 def divide_train_test(df, target):
     # Function divides data set in train and test
-    pass
-    
+    Xtrain,Xtest,Ytrain,Ytest = train_test_split(df.drop(target,axis=1),df[target],test_size=0.2, random_state=0)
+    return Xtrain,Xtest,Ytrain,Ytest
 
 
 
 def extract_cabin_letter(df, var):
     # captures the first letter
-    pass 
+    return df[var].str[0] 
 
 
 
 def add_missing_indicator(df, var):
     # function adds a binary missing value indicator
-    pass
+    return np.where(df[var].isnull(), 1, 0)
 
 
     
-def impute_na():
+def impute_na(df,val='Missing'):
     # function replaces NA by value entered by user
     # or by string Missing (default behaviour)
-    pass
+    for c in df.columns:
+        if val == 'Missing':
+            df[c].fillna(val)
+        else:
+            df[c].fillna(df[c].mode()[0])
 
 
 
-def remove_rare_labels():
+def remove_rare_labels(df,var,rare_perc):
     # groups labels that are not in the frequent list into the umbrella
     # group Rare
-    pass
+    tmp = df.groupby(var)[var].count() / len(df)
+    labels =  tmp[tmp > rare_perc].index
+    df[var] = np.where(df[var].isin(labels), df[var], 'Rare')
+    return df
 
 
 
@@ -55,7 +63,9 @@ def encode_categorical(df, var):
     
     df = df.copy()
     
-    pass
+    df = pd.concat([df,pd.get_dummies(df[var], prefix=var, drop_first=True)], axis=1)
+    df.drop(var,inplace=True)
+    return df
 
 
 
@@ -63,27 +73,44 @@ def check_dummy_variables(df, dummy_list):
     
     # check that all missing variables where added when encoding, otherwise
     # add the ones that are missing
-    pass
+    missing_vars = [var for var in dummy_list if var not in df.columns]
+    
+    if len(missing_vars) == 0:
+        print('All dummies were added')
+    else:
+        for var in missing_vars:
+            df[var] = 0
+    
+    return df
     
 
 def train_scaler(df, output_path):
     # train and save scaler
-    pass
+    scaler = StandardScaler()
+    scaler.fit(df)
+    joblib.dump(scaler,output_path)
+    return scaler
   
     
 
 def scale_features(df, output_path):
     # load scaler and transform data
-    pass
+    scaler = joblib.load(output_path)
+    return scaler.transform(df)
+    
 
 
 
 def train_model(df, target, output_path):
     # train and save model
-    pass
+    clf = LogisticRegression(C=0.0005, random_state=0)
+    clf.fit(df,target)
+    joblib.dump(clf,output_path)
 
 
 
 def predict(df, model):
     # load model and get predictions
+    clf = joblib.load(model)
+    return clf.predict(df)
 
