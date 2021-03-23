@@ -36,19 +36,20 @@ xtrain[config.CATEGORICAL_VARS] = pf.encode_categorical(xtrain,config.CATEGORICA
 xtest[config.CATEGORICAL_VARS] = pf.encode_categorical(xtest,config.CATEGORICAL_VARS)
 
 # check all dummies were added
-
+xtrain = pf.check_dummy_variables(xtrain,config.DUMMY_VARIABLES)
+xtest = pf.check_dummy_variables(xtest,config.DUMMY_VARIABLES)
 
 
 # train scaler and save
-
+scaler = pf.train_scaler(xtrain,config.OUTPUT_SCALER_PATH)
 
 
 # scale train set
-
-
+xtrain = pf.scale_features(xtrain,config.OUTPUT_SCALER_PATH)
+xtest = pf.scale_features(xtest,config.OUTPUT_SCALER_PATH)
 
 # train model and save
-
+pf.train_model(xtrain,config.TARGET,config.OUTPUT_MODEL_PATH)
 
 
 print('Finished training')
