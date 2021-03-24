@@ -18,14 +18,16 @@ def predict(data):
     
     
     # Group rare labels
-    data=pf.remove_rare_labels(data,config.CATEGORICAL_VARS,0.05)
+    for var in config.CATEGORICAL_VARS:
+        data[var] = pf.remove_rare_labels(data, var,config.FREQUENT_LABELS[var])
     
     # encode variables
     data = pf.encode_categorical(data,config.CATEGORICAL_VARS)
-        
+    print(data.shape)
         
     # check all dummies were added
     data = pf.check_dummy_variables(data,config.DUMMY_VARIABLES)
+    print(data.shape)
     
     # scale variables
     data = pf.scale_features(data,config.OUTPUT_SCALER_PATH)

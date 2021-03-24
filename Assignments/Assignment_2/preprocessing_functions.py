@@ -49,14 +49,10 @@ def impute_na(df,val='Missing'):
 
 
 
-def remove_rare_labels(df,var,rare_perc):
+def remove_rare_labels(df, var, frequent_labels):
     # groups labels that are not in the frequent list into the umbrella
     # group Rare
-    for cat in var:
-        tmp = df.groupby(cat)[cat].count() / len(df)
-        labels =  tmp[tmp > rare_perc].index
-        df[cat] = np.where(df[cat].isin(labels), df[cat], 'Rare')
-    return df
+    return np.where(df[var].isin(frequent_labels), df[var], 'Rare')
 
 
 
