@@ -42,18 +42,20 @@ def impute_na(df,val='Missing'):
     # or by string Missing (default behaviour)
     for c in df.columns:
         if val == 'Missing':
-            df[c].fillna(val)
+            df[c].fillna(val,inplace=True)
         else:
-            df[c].fillna(df[c].mode()[0])
+            df[c].fillna(df[c].mode()[0],inplace=True)
+    return df
 
 
 
 def remove_rare_labels(df,var,rare_perc):
     # groups labels that are not in the frequent list into the umbrella
     # group Rare
-    tmp = df.groupby(var)[var].count() / len(df)
-    labels =  tmp[tmp > rare_perc].index
-    df[var] = np.where(df[var].isin(labels), df[var], 'Rare')
+    for cat in var:
+        tmp = df.groupby(cat)[cat].count() / len(df)
+        labels =  tmp[tmp > rare_perc].index
+        df[cat] = np.where(df[cat].isin(labels), df[cat], 'Rare')
     return df
 
 
@@ -62,9 +64,9 @@ def encode_categorical(df, var):
     # adds ohe variables and removes original categorical variable
     
     df = df.copy()
-    
-    df = pd.concat([df,pd.get_dummies(df[var], prefix=var, drop_first=True)], axis=1)
-    df.drop(var,inplace=True)
+    for cat in var:
+        df = pd.concat([df,pd.get_dummies(df[cat], prefix=cat, drop_first=True)], axis=1)
+    df.drop(var,axis=1,inplace=True)
     return df
 
 
@@ -78,6 +80,7 @@ def check_dummy_variables(df, dummy_list):
     if len(missing_vars) == 0:
         print('All dummies were added')
     else:
+        print(missing_vars)
         for var in missing_vars:
             df[var] = 0
     

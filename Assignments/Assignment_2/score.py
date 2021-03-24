@@ -7,31 +7,31 @@ import config
 def predict(data):
     
     # extract first letter from cabin
-    
+    data['cabin']=pf.extract_cabin_letter(data,'cabin')
 
     # impute NA categorical
-    
+    data[config.CATEGORICAL_VARS]=pf.impute_na(data[config.CATEGORICAL_VARS],'Missing')
     
     
     # impute NA numerical
-    
+    data[config.NUMERICAL_TO_IMPUTE]=pf.impute_na(data[config.NUMERICAL_TO_IMPUTE],'Numerical')
     
     
     # Group rare labels
-
+    data=pf.remove_rare_labels(data,config.CATEGORICAL_VARS,0.05)
     
     # encode variables
-
+    data = pf.encode_categorical(data,config.CATEGORICAL_VARS)
         
         
     # check all dummies were added
-
+    data = pf.check_dummy_variables(data,config.DUMMY_VARIABLES)
     
     # scale variables
-
+    data = pf.scale_features(data,config.OUTPUT_SCALER_PATH)
     
     # make predictions
-
+    predictions = pf.predict(data,config.OUTPUT_MODEL_PATH)
 
     
     return predictions
