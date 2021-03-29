@@ -84,8 +84,9 @@ class ExtractFirstLetter(BaseEstimator, TransformerMixin):
 
     def transform(self, X):
         X = X.copy()
-        for var in self.variables:
-            X[var] = X[var].str[0]
+        for feature in self.variables:
+            X[feature] = X[feature].str[0]
+
         return X
 
 # frequent label categorical encoder
