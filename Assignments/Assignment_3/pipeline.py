@@ -13,5 +13,8 @@ titanic_pipe = Pipeline(
     ('missing_indicator',pp.MissingIndicator(config.NUMERICAL_VARS))
     ('numerical_imputer',pp.NumericalImputer(config.NUMERICAL_VARS)),
     ('cabin_extractor',pp.ExtractFirstLetter(config.CABIN)),
-    
+    ('rare_labels',pp.RareLabelCategoricalEncoder(config.CATEGORICAL_VARS)),
+    ('categorical_encoder',pp.CategoricalEncoder(config.CATEGORICAL_VARS)),
+    ('scaler',StandardScaler()),
+    ('model',LogisticRegression(C=0.0005, random_state=0))
     )
