@@ -61,6 +61,7 @@ class NumericalImputer(BaseEstimator, TransformerMixin):
         self.imputer_dict_ = {}
         for var in self.variables:
             self.imputer_dict_[var]=X[var].mode()[0]
+        return self
 
     def transform(self, X):
         X = X.copy()
