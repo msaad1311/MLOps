@@ -105,8 +105,9 @@ class RareLabelCategoricalEncoder(BaseEstimator, TransformerMixin):
         # persist frequent labels in dictionary
         self.encoder_dict_ = {}
         for var in self.variables:
-            t = pd.Series(X[var].value_count()/len(X))
-            self.encoder_dict_[var] = list([t > self.tol].index)
+            t = pd.Series(X[var].value_counts() / np.float(len(X)))
+            self.encoder_dict_[var] = list(t[t >= self.tol].index)
+        return self
 
     def transform(self, X):
         X = X.copy()
@@ -135,7 +136,7 @@ class CategoricalEncoder(BaseEstimator, TransformerMixin):
         # encode labels
         X = X.copy()
         # get dummies
-        X = pd.concat([X,self.dummies],axis=1)
+        X = pd.concat([X,pd.get_dummies(X[self.variables],drop_first=True)],axis=1)
         # drop original variables
         X.drop(self.variables,axis=1,inplace=True)
         # add missing dummies if any
